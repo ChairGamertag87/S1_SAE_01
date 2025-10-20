@@ -1,3 +1,4 @@
+import tests.*;
 
 
 public  class Main {
