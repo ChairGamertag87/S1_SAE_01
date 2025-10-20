@@ -41,21 +41,21 @@ Créer une application pour aider les arbitres à gérer une épreuve de saut d�
 ### 🌳 Les Fichiers
 
 ```java
-/S1_SAE_01/
+import tests.JeuxEssais;/S1_SAE_01/
+        │
+        ├──Main.java
+├──Course.java
+├──Manche.java
+├──Concurrent.java
+├──Resultat.java
 │
-├── Main.java
-├── Course.java
-├── Manche.java
-├── Concurrent.java
-├── Resultat.java
+        ├──Affichage.java
+├──Saisie.java
 │
-├── Affichage.java
-├── Saisie.java
+        ├──Podium.java
 │
-├── Podium.java
-│
-└── tests/
-    └── JeuxEssais.java
+        └──tests/
+        └──JeuxEssais.java
 ```
 
 ---
