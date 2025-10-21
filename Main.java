@@ -5,6 +5,7 @@ public class Main {
     static Scanner sc = new Scanner(System.in);
 
     // === FONCTION PRINCIPALE ===
+	//les tests -> clement
     public static void main(String[] args) {
         System.out.println(formatTemps(83456));
 
@@ -85,25 +86,29 @@ public class Main {
     ) { }
 
     // === SAISIES UNITAIRES ===
+	//keridwen
     public static int saisirNbBarresTombees(int nbBarresMax) { 
 		if barreTombe{
 			nbBarres[joueur] += 1;
 			barreTombe = false;
 		}
-		if (nbBarres[joueur]>nbBarresMax){
+		if (nbBarres[joueur]==nbBarresMax){
 			System.out.println("Toutes les barres sont tombées!");
 		}
 		return nbBarres[joueur]; 
 	}
-
+	
+	//keridwen
     public static int saisirNbRefus(int[]nbRefus) { 
 		if refus{
 			nbRefus[joueur]+=1;
 			refus=false;
 		}	
 		return nbRefus[joueur]; 
+		}
 	}
 
+	//keridwen
     public static boolean elimine(nbRefus[], chute, longueurPiste) { 
 		if (nbRefus[joueur]>3){
 			elimine=true;
@@ -122,6 +127,7 @@ public class Main {
 				}
 			}
 		return elimine; 
+		}
 	}
 
     public static long saisirTempsMs() { 
@@ -132,7 +138,7 @@ public class Main {
     public static boolean estElimine(int nbRefus, boolean chute, long tempsMs, double longueurPiste) { return false; }
 
 
-
+	//clement
     public static double calculerTempsCompense(long tempsMs, int nbBarres) {
         for  (int i = 0; i < nbBarres; i++) {
             tempsMs += tempsMs + 8000;
@@ -141,6 +147,7 @@ public class Main {
     }
 
     // === AFFICHAGES ===
+	//clement
     public static void afficherResultats(
             int nbCompetiteurs,
             boolean[] elimine,
@@ -148,6 +155,7 @@ public class Main {
 
     }
 
+	//clement
     public static void afficherPodium(
             int nbCompetiteurs,
             boolean[] elimine,
@@ -205,6 +213,7 @@ public class Main {
         }
     }
 
+	//clement
     public static String formatTemps(double tempsMs) {
         int totalSecondes = (int)(tempsMs / 1000);
 
