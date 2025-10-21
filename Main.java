@@ -23,8 +23,10 @@ public class Main {
             int nbCompetiteurs,
             int nbBarresMax,
             double longueurPiste,
-            int[] nbBarresTombees,
+            int[] nbBarres,
+			boolean barreTombe,
             int[] nbRefus,
+			boolean refus,
             boolean[] chute,
             long[] tempsMs,
             boolean[] elimine,
@@ -32,13 +34,48 @@ public class Main {
     ) { }
 
     // === SAISIES UNITAIRES ===
-    public static int saisirNbBarresTombees(int nbBarresMax) { return 0; }
+    public static int saisirNbBarresTombees(int nbBarresMax) { 
+		if barreTombe{
+			nbBarres[joueur] += 1;
+			barreTombe = false;
+		}
+		if (nbBarres[joueur]>nbBarresMax){
+			System.out.println("Toutes les barres sont tombées!");
+		}
+		return nbBarres[joueur]; 
+	}
 
-    public static int saisirNbRefus() { return 0; }
+    public static int saisirNbRefus(int[]nbRefus) { 
+		if refus{
+			nbRefus[joueur]+=1;
+			refus=false;
+		}	
+		return nbRefus[joueur]; 
+	}
 
-    public static boolean saisirChute() { return false; }
+    public static boolean elimine(nbRefus[], chute, longueurPiste) { 
+		if (nbRefus[joueur]>3){
+			elimine=true;
+			return elimine;
+		}
+		if chute{
+			elimine=true;
+			return  elimine;
+		}
+		if (longueurPiste<600){
+			if(tempMs>120000){
+				elimine=true;
+			}else{
+				if(tempMs>180000){
+					elimine=true;
+				}
+			}
+		return elimine; 
+	}
 
-    public static long saisirTempsMs() { return 0; }
+    public static long saisirTempsMs() { 
+		return 0; 
+	}
 
     // === CALCULS ===
     public static boolean estElimine(int nbRefus, boolean chute, long tempsMs, double longueurPiste) { return false; }
