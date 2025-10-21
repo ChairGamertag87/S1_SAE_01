@@ -13,7 +13,7 @@ public class Main {
 		
         // Saisie information Epreuve 
         int nbCompetiteurs = saisieEntierBorne(sc, 1, max_Competiteur, "Veuillez saisir le nombre de compétiteurs (entre 1 et " + max_Competiteur + ")");
-        double longueurpiste = saisieReelMinimum(sc, 0.0, "Veuillez saisir la longueur de la piste (>=0.0)");
+        double longueurPiste = saisieReelMinimum(sc, 0.0, "Veuillez saisir la longueur de la piste (>=0.0)");
         int nbObstacles = saisieEntierBorne(sc, 1, Integer.MAX_VALUE, "Veuillez saisir le nombre d'obstacles (>1)");
 
         int minBarres = nbObstacles * 2;
@@ -30,13 +30,13 @@ public class Main {
 		
 		//Résultats de la première manche
 		int competiteurs= nbCompetiteurs-1;
-		for(i=0, i<competiteurs, i++){
+        int i = 0;
+		for( i=0;  i < competiteurs;  i++){
 			afficherManche(nbCompetiteurs, nbBarresMax, longueurPiste, nbBarres[i], barreTombe, nbRefus[i],refus, chute[i], tempsMs[i], elimine[i], tempsCompense[i], 1 , i);
 		}
 		
 		//Résultats de la deuxième manche
-		int competiteurs= nbCompetiteurs-1;
-		for(i=0, i<competiteurs, i++){
+		for(i=0; i<competiteurs;  i++){
 			afficherManche(nbCompetiteurs, nbBarresMax, longueurPiste, nbBarres[i], barreTombe, nbRefus[i],refus, chute[i], tempsMs[i], elimine[i], tempsCompense[i], 2 , i);
 		}
 
@@ -140,9 +140,9 @@ public class Main {
 			boolean barreTombe,
             int[] nbRefus,
 			boolean refus,
-            boolean[] chute,
+            boolean chute,
             int[] tempsMs,
-            boolean[] elimine,
+            boolean elimine,
 			int numeroManche,
 			int numeroJoueur
     ) { 
@@ -164,7 +164,7 @@ public class Main {
 				}
 				System.out.println("Ce joueur a réalisé un temps de " + tempsMs[numeroJoueur-1]);
 				if (barreTombe){
-					int tempsFinal = tempsCompense(tempsMs, nbBarres[numeroJoueur-1]);
+					int tempsFinal = tempsCompense(tempsMs[numeroJoueur-1], nbBarres[numeroJoueur-1]);
 					System.out.println("Il a cependant fait tomber des barres, ramenant son temps final à " + tempsFinal + ".");
 				}
 				
@@ -249,7 +249,7 @@ public class Main {
         // On cherche les 3 meilleurs temps distincts
         for (int i = 0; i < nbCompetiteurs; i++) {
             if (!elimine[i]) {
-                int t = tempsCompense[i];
+                double t = tempsCompense[i];
 
                 if (meilleur == -1 || t < meilleur) {
                     troisieme = deuxieme;
