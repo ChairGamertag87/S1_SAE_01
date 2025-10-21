@@ -4,12 +4,13 @@ public class Main {
 
     static Scanner sc = new Scanner(System.in);
 
-    public static int max_Competiteur = 50;
 
     // === FONCTION PRINCIPALE ===
+	//les tests -> clement
     public static void main(String[] args) {
         System.out.println(formatTemps(83456));
-
+		int max_Competiteur = 50;
+		
         // Saisie information Epreuve 
         int nbCompetiteurs = saisieEntierBorne(sc, 1, max_Competiteur, "Veuillez saisir le nombre de compétiteurs (entre 1 et " + max_Competiteur + ")");
         double longueurpiste = saisieReelMinimum(sc, 0.0, "Veuillez saisir la longueur de la piste (>=0.0)");
@@ -21,9 +22,23 @@ public class Main {
 
         System.out.println("Récapitulatif de l'épreuve: ");
         System.out.println("Nombre de compétiteurs : " + nbCompetiteurs);
-        System.out.println("Longeur de la piste : " + longueurpiste);
+        System.out.println("Longeur de la piste : " + longueurPiste);
         System.out.println("Nombre d'obstacles : " + nbObstacles);
         System.out.println("Nombre total de barres : " + nbBarres);
+		
+		//Saisir manche
+		
+		//Résultats de la première manche
+		int competiteurs= nbCompetiteurs-1;
+		for(i=0, i<competiteurs, i++){
+			afficherManche(nbCompetiteurs, nbBarresMax, longueurPiste, nbBarres[i], barreTombe, nbRefus[i],refus, chute[i], tempsMs[i], elimine[i], tempsCompense[i], 1 , i);
+		}
+		
+		//Résultats de la deuxième manche
+		int competiteurs= nbCompetiteurs-1;
+		for(i=0, i<competiteurs, i++){
+			afficherManche(nbCompetiteurs, nbBarresMax, longueurPiste, nbBarres[i], barreTombe, nbRefus[i],refus, chute[i], tempsMs[i], elimine[i], tempsCompense[i], 2 , i);
+		}
 
         // === TEST 1 : aucun éliminé, tous temps différents ===
         System.out.println("TEST 1 : tous temps différents");
@@ -116,8 +131,8 @@ public class Main {
         return valeur;
     }
 
-    // === SAISIE DES RÉSULTATS D’UNE MANCHE ===
-    public static void saisirManche(
+    // === AFFICHAGE DES RÉSULTATS D’UNE MANCHE ===
+    public static void afficherManche(
             int nbCompetiteurs,
             int nbBarresMax,
             double longueurPiste,
@@ -126,14 +141,39 @@ public class Main {
             int[] nbRefus,
 			boolean refus,
             boolean[] chute,
-            long[] tempsMs,
+            int[] tempsMs,
             boolean[] elimine,
-            double[] tempsCompense
-    ) { }
+			int numeroManche,
+			int numeroJoueur
+    ) { 
+		if (numeroManche != 1 || numeroManche != 2){
+			System.out.println("Erreur ! La manche n°" + numeroManche + " n'existe pas!");
+		}else if(numeroJoueur<0 || numeroJoueur>nbCompetiteurs){
+			System.out.println("Erreur ! Le joueur n°" + numeroJoueur + " n'existe pas!");
+		}else{
+			if(numeroManche!=1 || elimine ){
+				System.out.println("Le joueur n°" + numeroJoueur + " a été éliminé à la première manche...");
+			}else{
+				System.out.println("Voici les résultats de la manche n°" + numeroManche + " pour le joueur n°" + numeroJoueur + " :");
+				System.out.println("Ce joueur était sur un parcours comportant " + nbBarresMax + " et en a fait tomber " + nbBarres[numeroJoueur-1] + "." );
+				System.out.println("Son cheval a refusé " + nbRefus[numeroJoueur-1] + " fois de sauter un obstacle.");
+				if (chute){
+					System.out.println("Ce joueur est malheureusement tombé de son cheval durant la manche, il est donc disqualifié.");
+				}else{
+					System.out.println("Ce joueur n'est pas tombé durant son parcours, il est donc toujours en course pour le podium.");
+				}
+				System.out.println("Ce joueur a réalisé un temps de " + tempsMs[numeroJoueur-1]);
+				if (barreTombe){
+					int tempsFinal = tempsCompense(tempsMs, nbBarres[numeroJoueur-1]);
+					System.out.println("Il a cependant fait tomber des barres, ramenant son temps final à " + tempsFinal + ".");
+				}
+				
+			}
+	}
 
 
-    // === SAISIES UNITAIRES ===
-    public static int saisirNbBarresTombees(int nbBarresMax) { 
+    // === SAISIES UNITAIRES (keridwen)===
+    public static int saisirNbBarresTombees(int nbBarresMax, int nbBarres[], boolean barreTombe) { 
 		if (barreTombe){
 			nbBarres[joueur] += 1;
 			barreTombe = false;
@@ -144,7 +184,7 @@ public class Main {
 		return nbBarres[joueur]; 
 	}
 
-    public static int saisirNbRefus(int[]nbRefus) { 
+    public static int saisirNbRefus(int[]nbRefus, boolean refus) { 
 		if (refus){
 			nbRefus[joueur]+=1;
 			refus=false;
@@ -152,14 +192,10 @@ public class Main {
 		return nbRefus[joueur]; 
 	}
 
-    public static boolean elimine(int nbRefus[], boolean chute, double longueurPiste) { 
+    public static boolean elimine(int nbRefus[], double longueurPiste) { 
 		if (nbRefus[joueur]>3){
 			elimine=true;
 			return elimine;
-		}
-		if (chute) {
-			elimine=true;
-			return  elimine;
 		}
 		if (longueurPiste<600){
 			if(tempMs>120000){
@@ -172,24 +208,28 @@ public class Main {
         }
 		return elimine; 
 	}
+	
+	public static boolean chute(boolean chute){
+		if (chute) {
+			elimine=true;
+		}
+		return  elimine;
+	}
 
     public static long saisirTempsMs() { 
 		return 0; 
 	}
 
-    // === CALCULS ===
-    public static boolean estElimine(int nbRefus, boolean chute, long tempsMs, double longueurPiste) { return false; }
+    // === CALCULS (clement)===
 
-
-
-    public static double calculerTempsCompense(long tempsMs, int nbBarres) {
+    public static int tempsCompense(int tempsMs, int nbBarres) {
         for  (int i = 0; i < nbBarres; i++) {
-            tempsMs += tempsMs + 8000;
+            tempsMs = tempsMs + 8000;
         }
         return tempsMs;
     }
 
-    // === AFFICHAGES ===
+    // === AFFICHAGES (clement)===
     public static void afficherResultats(
             int nbCompetiteurs,
             boolean[] elimine,
@@ -209,7 +249,7 @@ public class Main {
         // On cherche les 3 meilleurs temps distincts
         for (int i = 0; i < nbCompetiteurs; i++) {
             if (!elimine[i]) {
-                double t = tempsCompense[i];
+                int t = tempsCompense[i];
 
                 if (meilleur == -1 || t < meilleur) {
                     troisieme = deuxieme;
@@ -254,6 +294,7 @@ public class Main {
         }
     }
 
+	//clement
     public static String formatTemps(double tempsMs) {
         int totalSecondes = (int)(tempsMs / 1000);
 
