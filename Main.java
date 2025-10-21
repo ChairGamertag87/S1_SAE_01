@@ -134,7 +134,7 @@ public class Main {
 
     // === SAISIES UNITAIRES ===
     public static int saisirNbBarresTombees(int nbBarresMax) { 
-		if barreTombe{
+		if (barreTombe){
 			nbBarres[joueur] += 1;
 			barreTombe = false;
 		}
@@ -145,19 +145,19 @@ public class Main {
 	}
 
     public static int saisirNbRefus(int[]nbRefus) { 
-		if refus{
+		if (refus){
 			nbRefus[joueur]+=1;
 			refus=false;
 		}	
 		return nbRefus[joueur]; 
 	}
 
-    public static boolean elimine(nbRefus[], chute, longueurPiste) { 
+    public static boolean elimine(int nbRefus[], boolean chute, double longueurPiste) { 
 		if (nbRefus[joueur]>3){
 			elimine=true;
 			return elimine;
 		}
-		if chute{
+		if (chute) {
 			elimine=true;
 			return  elimine;
 		}
@@ -169,6 +169,7 @@ public class Main {
 					elimine=true;
 				}
 			}
+        }
 		return elimine; 
 	}
 
