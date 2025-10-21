@@ -4,10 +4,26 @@ public class Main {
 
     static Scanner sc = new Scanner(System.in);
 
+    public static int max_Competiteur = 50;
+
     // === FONCTION PRINCIPALE ===
-	//les tests -> clement
     public static void main(String[] args) {
         System.out.println(formatTemps(83456));
+
+        // Saisie information Epreuve 
+        int nbCompetiteurs = saisieEntierBorne(sc, 1, max_Competiteur, "Veuillez saisir le nombre de compétiteurs (entre 1 et " + max_Competiteur + ")");
+        double longueurpiste = saisieReelMinimum(sc, 0.0, "Veuillez saisir la longueur de la piste (>=0.0)");
+        int nbObstacles = saisieEntierBorne(sc, 1, Integer.MAX_VALUE, "Veuillez saisir le nombre d'obstacles (>1)");
+
+        int minBarres = nbObstacles * 2;
+        int maxBarres = nbObstacles * 4;
+        int nbBarres = saisieEntierBorne(sc, minBarres, maxBarres, "Veuillez saisir le nombre de Barres (entre " + minBarres + " et " + maxBarres + ")");
+
+        System.out.println("Récapitulatif de l'épreuve: ");
+        System.out.println("Nombre de compétiteurs : " + nbCompetiteurs);
+        System.out.println("Longeur de la piste : " + longueurpiste);
+        System.out.println("Nombre d'obstacles : " + nbObstacles);
+        System.out.println("Nombre total de barres : " + nbBarres);
 
         // === TEST 1 : aucun éliminé, tous temps différents ===
         System.out.println("TEST 1 : tous temps différents");
@@ -61,14 +77,44 @@ public class Main {
 
     }
 
-    // === SAISIE DES INFORMATIONS DE LA COURSE ===
-    public static int saisirNombreCompetiteurs() { return 0; }
+    // === SAISIE DES INFORMATIONS DE LA COURSE ( Léo Péron )===
+    private static int lireEntier(Scanner pfScanner) {
+        while (!pfScanner.hasNextInt()) {
+            System.out.println("Erreur : veuillez saisir un nombre entier.");
+            pfScanner.next();
+        }
+        return pfScanner.nextInt();
+    }
+    
+    private static double lireDouble(Scanner pfScanner) { 
+        while(!pfScanner.hasNextDouble()) {
+            System.out.println("Erreur : veuillez saisir un nombre réel.");
+            pfScanner.next();
+        }
+        return pfScanner.nextDouble();
+    }
 
-    public static double saisirLongueurPiste() { return 0; }
-
-    public static int saisirNombreObstacles() { return 0; }
-
-    public static int saisirNombreBarres(int nbObstacles) { return 0; }
+    public static int saisieEntierBorne(Scanner pfScanner, int pfBorneInf, int pfBorneSup, String pfMessage) {
+        int valeur;
+        System.out.print(pfMessage);
+        valeur = lireEntier(pfScanner);
+        while (valeur < pfBorneInf || valeur > pfBorneSup) {
+            System.out.println("Erreur : la valeur doit être comprise entre " + pfBorneInf + " et " + pfBorneSup + ".");
+            System.out.print(pfMessage);
+            valeur = lireEntier(pfScanner);
+        }
+        return valeur;
+    }
+    public static double saisieReelMinimum(Scanner pfScanner, double pfBorneMin, String pfMessage) {
+        System.out.print(pfMessage);
+        double valeur = lireDouble(pfScanner);
+        while (valeur <= pfBorneMin) {
+            System.out.println("Erreur : la valeur doit être strictement supérieure à " + pfBorneMin + ".");
+            System.out.print(pfMessage);
+            valeur = lireDouble(pfScanner);
+        }
+        return valeur;
+    }
 
     // === SAISIE DES RÉSULTATS D’UNE MANCHE ===
     public static void saisirManche(
@@ -85,30 +131,27 @@ public class Main {
             double[] tempsCompense
     ) { }
 
+
     // === SAISIES UNITAIRES ===
-	//keridwen
     public static int saisirNbBarresTombees(int nbBarresMax) { 
 		if barreTombe{
 			nbBarres[joueur] += 1;
 			barreTombe = false;
 		}
-		if (nbBarres[joueur]==nbBarresMax){
+		if (nbBarres[joueur]>nbBarresMax){
 			System.out.println("Toutes les barres sont tombées!");
 		}
 		return nbBarres[joueur]; 
 	}
-	
-	//keridwen
+
     public static int saisirNbRefus(int[]nbRefus) { 
 		if refus{
 			nbRefus[joueur]+=1;
 			refus=false;
 		}	
 		return nbRefus[joueur]; 
-		}
 	}
 
-	//keridwen
     public static boolean elimine(nbRefus[], chute, longueurPiste) { 
 		if (nbRefus[joueur]>3){
 			elimine=true;
@@ -127,7 +170,6 @@ public class Main {
 				}
 			}
 		return elimine; 
-		}
 	}
 
     public static long saisirTempsMs() { 
@@ -138,7 +180,7 @@ public class Main {
     public static boolean estElimine(int nbRefus, boolean chute, long tempsMs, double longueurPiste) { return false; }
 
 
-	//clement
+
     public static double calculerTempsCompense(long tempsMs, int nbBarres) {
         for  (int i = 0; i < nbBarres; i++) {
             tempsMs += tempsMs + 8000;
@@ -147,7 +189,6 @@ public class Main {
     }
 
     // === AFFICHAGES ===
-	//clement
     public static void afficherResultats(
             int nbCompetiteurs,
             boolean[] elimine,
@@ -155,7 +196,6 @@ public class Main {
 
     }
 
-	//clement
     public static void afficherPodium(
             int nbCompetiteurs,
             boolean[] elimine,
@@ -213,7 +253,6 @@ public class Main {
         }
     }
 
-	//clement
     public static String formatTemps(double tempsMs) {
         int totalSecondes = (int)(tempsMs / 1000);
 
