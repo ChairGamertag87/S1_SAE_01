@@ -26,13 +26,23 @@ public class Main {
         System.out.println("Nombre d'obstacles : " + nbObstacles);
         System.out.println("Nombre total de barres : " + nbBarres);
 		
-		//Saisir manche
+		//Saisie de la première manche
+		int competiteurs= nbCompetiteurs-1;
+		int i=0;
+		System.out.println("Nous allons procéder à la saisie de la première manche: ");
+		for(i=0; i < competiteurs; i++){
+			saisieManche();
+		}
 		
 		//Résultats de la première manche
-		int competiteurs= nbCompetiteurs-1;
-        int i = 0;
 		for( i=0;  i < competiteurs;  i++){
 			afficherManche(nbCompetiteurs, nbBarresMax, longueurPiste, nbBarres[i], barreTombe, nbRefus[i],refus, chute[i], tempsMs[i], elimine[i], tempsCompense[i], 1 , i);
+		}
+		
+		//Saisie de la deuxième manche
+		System.out.println("Nous allons procéder à la saisie de la deuxième manche: ");
+		for(i=0; i < competiteurs; i++){
+			saisieManche();
 		}
 		
 		//Résultats de la deuxième manche
@@ -130,8 +140,12 @@ public class Main {
         }
         return valeur;
     }
-
-    // === AFFICHAGE DES RÉSULTATS D’UNE MANCHE ===
+	// === SAISIE D'UNE MANCHE (keridwen) ===
+	public static void saisieManche(){
+		
+	}
+	
+    // === AFFICHAGE DES RÉSULTATS D’UNE MANCHE (keridwen) ===
     public static void afficherManche(
             int nbCompetiteurs,
             int nbBarresMax,
