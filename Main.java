@@ -1,121 +1,146 @@
 import java.util.Scanner;
 
+/**
+ * Programme principal de gestion d'une épreuve équestre avec saisie de deux manches,
+ * calcul des temps compensés, éliminations et affichage du podium final.
+ *
+ * @author Clément, Léo, Kerdiwen
+ * @version 1.0
+ */
 public class Main {
 
+    /** Scanner global utilisé pour toutes les saisies utilisateur */
     static Scanner sc = new Scanner(System.in);
 
-
-    // === FONCTION PRINCIPALE ===
-	//les tests -> clement
+    /**
+     * Point d'entrée du programme.
+     * Initialise les données de l'épreuve, saisit les manches et affiche les résultats.
+     *
+     * @param args arguments de ligne de commande (non utilisés)
+     */
     public static void main(String[] args) {
-        System.out.println(formatTemps(83456));
-		int max_Competiteur = 50;
-		
-        // Saisie information Epreuve (leo)
-        int nbCompetiteurs = saisieEntierBorne(sc, 1, max_Competiteur, "Veuillez saisir le nombre de compétiteurs (entre 1 et " + max_Competiteur + ")");
-        double longueurPiste = saisieReelMinimum(sc, 0.0, "Veuillez saisir la longueur de la piste (>=0.0)");
-        int nbObstacles = saisieEntierBorne(sc, 1, Integer.MAX_VALUE, "Veuillez saisir le nombre d'obstacles (>1)");
+
+        int maxCompetiteur = 50;
+
+        // Saisie information Épreuve
+        int nbCompetiteurs = saisieEntierBorne(sc, 1, maxCompetiteur,
+                "Veuillez saisir le nombre de compétiteurs (entre 1 et " + maxCompetiteur + ") : ");
+        double longueurPiste = saisieReelMinimum(sc, 0.0,
+                "Veuillez saisir la longueur de la piste (> 0.0) : ");
+        int nbObstacles = saisieEntierBorne(sc, 1, Integer.MAX_VALUE,
+                "Veuillez saisir le nombre d'obstacles (>= 1) : ");
 
         int minBarres = nbObstacles * 2;
         int maxBarres = nbObstacles * 4;
-        int nbBarres = saisieEntierBorne(sc, minBarres, maxBarres, "Veuillez saisir le nombre de Barres (entre " + minBarres + " et " + maxBarres + ")");
+        int nbBarresMax = saisieEntierBorne(sc, minBarres, maxBarres,
+                "Veuillez saisir le nombre total de barres (entre " + minBarres + " et " + maxBarres + ") : ");
 
-        System.out.println("Récapitulatif de l'épreuve: ");
+        System.out.println("\nRécapitulatif de l'épreuve: ");
         System.out.println("Nombre de compétiteurs : " + nbCompetiteurs);
-        System.out.println("Longeur de la piste : " + longueurPiste);
+        System.out.println("Longueur de la piste : " + longueurPiste);
         System.out.println("Nombre d'obstacles : " + nbObstacles);
-        System.out.println("Nombre total de barres : " + nbBarres);
-		
-		//Saisie de la première manche (keridwen)
-		int competiteurs= nbCompetiteurs-1;
-		int [] nbBarres = new int[nbCompetiteurs];//init du tableau
-		int [] nbRefus = new int[nbCompetiteurs];
-		boolean refus = false;
-		int [] tempsMs = new int[nbCompetiteurs];
-		boolean chute = false;
-		boolean barreTombe = false;
-		boolean[] elimine = new boolean[nbCompetiteurs];
-		
-		int i=0;
-		System.out.println("Nous allons procéder à la saisie de la première manche: ");
-		for(i=0; i < competiteurs; i++){
-			tempMs[joueur]=0;
-			saisieManche(i, nbBarres[], barreTombe, nbRefus[], refus, tempsMs[i], chute, elimine[i]);
-		}
-		
-		//Résultats de la première manche(keridwen)
-		for( i=0;  i < competiteurs;  i++){
-			afficherManche(nbCompetiteurs, nbBarres, longueurPiste, nbBarres[i], barreTombe, nbRefus[i], refus, chute[i], tempsMs[i], elimine[i], tempsCompense[i], 1 , i);
-		}
-		
-		//Saisie de la deuxième manche(keridwen)
-		System.out.println("Nous allons procéder à la saisie de la deuxième manche: ");
-		for(i=0; i < competiteurs; i++){
-			if(elimine[i]){
-				System.out.println("Ce joueur a déjà été éliminé");
-				break;
-			}
-			saisieManche(i, nbBarres[], barreTombe, nbRefus[], refus, tempsMs[i], chute, elimine[i]);
-		}
-		
-		//Résultats de la deuxième manche(keridwen)
-		for(i=0; i<competiteurs;  i++){
-			afficherManche(nbCompetiteurs, nbBarres, longueurPiste, nbBarres[i], barreTombe, nbRefus[i],refus, chute[i], tempsMs[i], elimine[i], tempsCompense[i], 2 , i);
-		}
-
-        // === TEST 1 : aucun éliminé, tous temps différents ===
-        System.out.println("TEST 1 : tous temps différents");
-        boolean[] elimine1 = {false, false, false, false};
-        double[] temps1 = {85000, 90000, 95000, 100000};
-        afficherPodium(4, elimine1, temps1);
+        System.out.println("Nombre total de barres : " + nbBarresMax);
         System.out.println();
 
-        // === TEST 2 : égalité au 1er ===
-        System.out.println("TEST 2 : égalité au 1er");
-        boolean[] elimine2 = {false, false, false, false};
-        double[] temps2 = {85000, 85000, 90000, 95000};
-        afficherPodium(4, elimine2, temps2);
-        System.out.println();
+        // Données par joueur
+        int[] nbBarresM1 = new int[nbCompetiteurs];
+        int[] nbRefusM1 = new int[nbCompetiteurs];
+        int[] tempsMsM1 = new int[nbCompetiteurs];
+        boolean[] chuteM1 = new boolean[nbCompetiteurs];
+        boolean[] elimineM1 = new boolean[nbCompetiteurs];
 
-        // === TEST 3 : égalité au 2e ===
-        System.out.println("TEST 3 : égalité au 2e");
-        boolean[] elimine3 = {false, false, false, false, false};
-        double[] temps3 = {83000, 85000, 85000, 85000, 90000};
-        afficherPodium(5, elimine3, temps3);
-        System.out.println();
+        int[] nbBarresM2 = new int[nbCompetiteurs];
+        int[] nbRefusM2 = new int[nbCompetiteurs];
+        int[] tempsMsM2 = new int[nbCompetiteurs];
+        boolean[] chuteM2 = new boolean[nbCompetiteurs];
+        boolean[] elimineM2 = new boolean[nbCompetiteurs];
 
-        // === TEST 4 : égalité au 3e ===
-        System.out.println("TEST 4 : égalité au 3e");
-        boolean[] elimine4 = {false, false, false, false, false, false};
-        double[] temps4 = {80000, 85000, 90000, 90000, 90000, 95000};
-        afficherPodium(6, elimine4, temps4);
-        System.out.println();
+        // === Saisie de la première manche
+        System.out.println("Nous allons procéder à la saisie de la première manche:");
+        for (int i = 0; i < nbCompetiteurs; i++) {
+            System.out.println("\n--- Joueur " + (i + 1) + " (Manche 1) ---");
+            saisieManche(i, nbBarresMax, longueurPiste, nbBarresM1, nbRefusM1, tempsMsM1, chuteM1, elimineM1);
+        }
 
-        // === TEST 5 : 4 concurrents ex aequo au 1er ===
-        System.out.println("TEST 5 : 4 premiers ex aequo");
-        boolean[] elimine5 = {false, false, false, false, false};
-        double[] temps5 = {87000, 87000, 87000, 87000, 90000};
-        afficherPodium(5, elimine5, temps5);
-        System.out.println();
+        // === Résultats de la première manche
+        System.out.println("\n=== Résultats Manche 1 ===");
+        for (int i = 0; i < nbCompetiteurs; i++) {
+            afficherManche(
+                    nbCompetiteurs,
+                    nbBarresMax,
+                    longueurPiste,
+                    nbBarresM1,
+                    nbRefusM1,
+                    chuteM1,
+                    tempsMsM1,
+                    elimineM1,
+                    1,
+                    i
+            );
+        }
 
-        // === TEST 6 : certains éliminés ===
-        System.out.println("TEST 6 : avec éliminés");
-        boolean[] elimine6 = {false, true, false, true, false};
-        double[] temps6 = {85000, 86000, 83000, 87000, 88000};
-        afficherPodium(5, elimine6, temps6);
-        System.out.println();
+        // === Saisie de la deuxième manche
+        System.out.println("\nNous allons procéder à la saisie de la deuxième manche:");
+        for (int i = 0; i < nbCompetiteurs; i++) {
+            if (elimineM1[i]) {
+                System.out.println("\n--- Joueur " + (i + 1) + " (Manche 2) ---");
+                System.out.println("Ce joueur a déjà été éliminé à la manche 1, il ne participe pas à la manche 2.");
+                elimineM2[i] = true;
+                continue;
+            }
+            System.out.println("\n--- Joueur " + (i + 1) + " (Manche 2) ---");
+            saisieManche(i, nbBarresMax, longueurPiste, nbBarresM2, nbRefusM2, tempsMsM2, chuteM2, elimineM2);
+        }
 
-        // === TEST 7 : tout le monde éliminé ===
-        System.out.println("TEST 7 : tout le monde éliminé");
-        boolean[] elimine7 = {true, true, true};
-        double[] temps7 = {85000, 86000, 87000};
-        afficherPodium(3, elimine7, temps7);
-        System.out.println();
+        // === Résultats de la deuxième manche
+        System.out.println("\n=== Résultats Manche 2 ===");
+        for (int i = 0; i < nbCompetiteurs; i++) {
+            afficherManche(
+                    nbCompetiteurs,
+                    nbBarresMax,
+                    longueurPiste,
+                    nbBarresM2,
+                    nbRefusM2,
+                    chuteM2,
+                    tempsMsM2,
+                    elimineM2,
+                    2,
+                    i
+            );
+        }
 
+        // === Calcul du podium final
+        boolean[] elimFinal = new boolean[nbCompetiteurs];
+        double[] tempsCompenseFinal = new double[nbCompetiteurs];
+        for (int i = 0; i < nbCompetiteurs; i++) {
+            elimFinal[i] = elimineM1[i] || elimineM2[i];
 
+            double t1 = (!elimineM1[i] && tempsMsM1[i] > 0)
+                    ? computeTempsCompense(tempsMsM1[i], nbBarresM1[i])
+                    : -1;
+            double t2 = (!elimineM2[i] && tempsMsM2[i] > 0)
+                    ? computeTempsCompense(tempsMsM2[i], nbBarresM2[i])
+                    : -1;
+
+            if (elimFinal[i]) tempsCompenseFinal[i] = -1;
+            else if (t1 == -1 && t2 == -1) elimFinal[i] = true;
+            else if (t1 == -1) tempsCompenseFinal[i] = t2;
+            else if (t2 == -1) tempsCompenseFinal[i] = t1;
+            else tempsCompenseFinal[i] = Math.min(t1, t2);
+        }
+
+        System.out.println("\n=== PODIUM FINAL ===");
+        afficherPodium(nbCompetiteurs, elimFinal, tempsCompenseFinal);
     }
 
-    // === SAISIE DES INFORMATIONS DE LA COURSE ( Léo Péron )===
+    // ======================== MÉTHODES DE SAISIE ===========================
+
+    /**
+     * Lit un entier saisi par l'utilisateur.
+     *
+     * @param pfScanner scanner d'entrée
+     * @return la valeur entière saisie
+     */
     private static int lireEntier(Scanner pfScanner) {
         while (!pfScanner.hasNextInt()) {
             System.out.println("Erreur : veuillez saisir un nombre entier.");
@@ -123,211 +148,218 @@ public class Main {
         }
         return pfScanner.nextInt();
     }
-    
-    private static double lireDouble(Scanner pfScanner) { 
-        while(!pfScanner.hasNextDouble()) {
+
+    /**
+     * Lit un nombre réel saisi par l'utilisateur.
+     *
+     * @param pfScanner scanner d'entrée
+     * @return la valeur réelle saisie
+     */
+    private static double lireDouble(Scanner pfScanner) {
+        while (!pfScanner.hasNextDouble()) {
             System.out.println("Erreur : veuillez saisir un nombre réel.");
             pfScanner.next();
         }
         return pfScanner.nextDouble();
     }
 
-    public static int saisieEntierBorne(Scanner pfScanner, int pfBorneInf, int pfBorneSup, String pfMessage) {
+    /**
+     * Demande la saisie d’un entier compris entre deux bornes incluses.
+     *
+     * @param pfScanner scanner d'entrée
+     * @param borneInf  borne minimale (incluse)
+     * @param borneSup  borne maximale (incluse)
+     * @param message   message affiché à l'utilisateur
+     * @return l'entier saisi
+     */
+    public static int saisieEntierBorne(Scanner pfScanner, int borneInf, int borneSup, String message) {
         int valeur;
-        System.out.print(pfMessage);
+        System.out.print(message);
         valeur = lireEntier(pfScanner);
-        while (valeur < pfBorneInf || valeur > pfBorneSup) {
-            System.out.println("Erreur : la valeur doit être comprise entre " + pfBorneInf + " et " + pfBorneSup + ".");
-            System.out.print(pfMessage);
+        while (valeur < borneInf || valeur > borneSup) {
+            System.out.println("Erreur : la valeur doit être comprise entre " + borneInf + " et " + borneSup + ".");
+            System.out.print(message);
             valeur = lireEntier(pfScanner);
         }
         return valeur;
     }
-    public static double saisieReelMinimum(Scanner pfScanner, double pfBorneMin, String pfMessage) {
-        System.out.print(pfMessage);
+
+    /**
+     * Demande la saisie d’un nombre réel supérieur à une borne minimale.
+     *
+     * @param pfScanner scanner d'entrée
+     * @param borneMin  borne minimale (exclue)
+     * @param message   message affiché à l'utilisateur
+     * @return le nombre saisi
+     */
+    public static double saisieReelMinimum(Scanner pfScanner, double borneMin, String message) {
+        System.out.print(message);
         double valeur = lireDouble(pfScanner);
-        while (valeur <= pfBorneMin) {
-            System.out.println("Erreur : la valeur doit être strictement supérieure à " + pfBorneMin + ".");
-            System.out.print(pfMessage);
+        while (valeur <= borneMin) {
+            System.out.println("Erreur : la valeur doit être strictement supérieure à " + borneMin + ".");
+            System.out.print(message);
             valeur = lireDouble(pfScanner);
         }
         return valeur;
     }
-	
-	// === SAISIE D'UNE MANCHE (keridwen) ===
-	public static void saisieManche(int i, int [] nbBarres, boolean barreTombe, int [] nbRefus, boolean refus, int tempsMs, boolean chute, boolean elimine){
-		int joueur = i;
-		Scanner scanner = new Scanner(System.in);
-		while (tempsMs==0){
-			System.out.println("Le joueur a-t-il fait tomber une barre (oui ou non)?");
-			String réponse = scanner.nextString();
-			if(réponse=="oui"){
-				barreTombe = true;
-				nbBarres[joueur] = saisirNbBarresTombees(nbBarres, nbBarres[], barreTombe, joueur);
-				barreTombe = false;
-			}
-			System.out.println("Le cheval a-t-il refusé de sauter un obstacle (oui ou non)?");
-			String réponse = scanner.nextString();
-			if(réponse=="oui"){
-				refus = true;
-				nbRefus[joueur] = saisirNbRefus(nbRefus[], refus, joueur);
-				refus = false;
-			}
-			System.out.println("Le joueur est-il tombé (oui ou non)?");
-			String réponse = scanner.nextString();
-			if(réponse=="oui"){
-				chute = true;
-				chute(chute);
-				//return elimine;
-			}
-			System.out.println("Le parcours est-il fini (oui ou non)?");
-			String réponse = scanner.nextString();
-			if(réponse=="oui"){
-				tempsMs = saisirTempsMs(tempsMs);
-			}
-			elimine = elimine(nbRefus[joueur], longueurPiste, joueur, tempsMs);
-		}
-	}
-	
-    // === AFFICHAGE DES RÉSULTATS D’UNE MANCHE (keridwen) ===
+
+    // ======================== MANCHE ===========================
+
+    /**
+     * Saisit les données d'une manche pour un joueur.
+     *
+     * @param joueur        index du joueur
+     * @param nbBarresMax   nombre maximum de barres
+     * @param longueurPiste longueur de la piste en mètres
+     * @param nbBarres      tableau du nombre de barres tombées
+     * @param nbRefus       tableau du nombre de refus
+     * @param tempsMs       tableau des temps en millisecondes
+     * @param chute         tableau indiquant si le joueur est tombé
+     * @param elimine       tableau indiquant si le joueur est éliminé
+     */
+    public static void saisieManche(
+            int joueur,
+            int nbBarresMax,
+            double longueurPiste,
+            int[] nbBarres,
+            int[] nbRefus,
+            int[] tempsMs,
+            boolean[] chute,
+            boolean[] elimine
+    ) {
+        nbBarres[joueur] = 0;
+        nbRefus[joueur] = 0;
+        tempsMs[joueur] = 0;
+        chute[joueur] = false;
+        elimine[joueur] = false;
+
+        while (tempsMs[joueur] == 0 && !elimine[joueur]) {
+            System.out.print("Le joueur a-t-il fait tomber une barre (oui/non) ? ");
+            String rep = sc.next().trim();
+            if (rep.equalsIgnoreCase("oui")) nbBarres[joueur]++;
+
+            System.out.print("Le cheval a-t-il refusé de sauter un obstacle (oui/non) ? ");
+            rep = sc.next().trim();
+            if (rep.equalsIgnoreCase("oui")) nbRefus[joueur]++;
+
+            System.out.print("Le joueur est-il tombé (oui/non) ? ");
+            rep = sc.next().trim();
+            if (rep.equalsIgnoreCase("oui")) {
+                chute[joueur] = true;
+                elimine[joueur] = true;
+                System.out.println("Le joueur " + (joueur + 1) + " est éliminé pour chute.");
+                break;
+            }
+
+            System.out.print("Le parcours est-il fini (oui/non) ? ");
+            rep = sc.next().trim();
+            if (rep.equalsIgnoreCase("oui")) {
+                System.out.print("Saisissez le temps en millisecondes : ");
+                tempsMs[joueur] = lireEntier(sc);
+            }
+
+            elimine[joueur] = checkElimination(nbRefus[joueur], longueurPiste, tempsMs[joueur]);
+            if (elimine[joueur]) System.out.println("Le joueur " + (joueur + 1) + " est éliminé.");
+        }
+    }
+
+    /**
+     * Vérifie si un joueur doit être éliminé selon le nombre de refus ou le temps.
+     *
+     * @param nbRefus       nombre de refus du cheval
+     * @param longueurPiste longueur de la piste
+     * @param tempsMs       temps réalisé en millisecondes
+     * @return true si le joueur est éliminé, sinon false
+     */
+    private static boolean checkElimination(int nbRefus, double longueurPiste, int tempsMs) {
+        if (nbRefus >= 3) return true;
+        if (tempsMs > 0) {
+            int limite = (longueurPiste < 600.0) ? 120_000 : 180_000;
+            return tempsMs > limite;
+        }
+        return false;
+    }
+
+    // ======================== AFFICHAGES ===========================
+
+    /**
+     * Affiche les résultats d'une manche pour un joueur.
+     *
+     * @param nbCompetiteurs nombre total de compétiteurs
+     * @param nbBarresMax    nombre maximum de barres
+     * @param longueurPiste  longueur de la piste
+     * @param nbBarres       tableau du nombre de barres tombées
+     * @param nbRefus        tableau du nombre de refus
+     * @param chute          tableau des chutes
+     * @param tempsMs        tableau des temps
+     * @param elimine        tableau des éliminations
+     * @param numeroManche   numéro de la manche (1 ou 2)
+     * @param numeroJoueur   index du joueur
+     */
     public static void afficherManche(
             int nbCompetiteurs,
             int nbBarresMax,
             double longueurPiste,
             int[] nbBarres,
-			boolean barreTombe,
             int[] nbRefus,
-			boolean refus,
-            boolean chute,
+            boolean[] chute,
             int[] tempsMs,
-            boolean elimine,
-			int numeroManche,
-			int numeroJoueur
-    ) { 
-		if (numeroManche != 1 || numeroManche != 2){
-			System.out.println("Erreur ! La manche n°" + numeroManche + " n'existe pas!");
-			//utile si on demandait la saisie manuelle de la manche or ici on met 1 ou 2 d'office
-		}else if(numeroJoueur<0 || numeroJoueur>nbCompetiteurs){
-			System.out.println("Erreur ! Le joueur n°" + numeroJoueur + " n'existe pas!");
-			//utile si on demandait la saisie manuelle des numéros or ici c'est automatique
-		}else{
-			if(numeroManche!=1 || elimine ){
-				System.out.println("Le joueur n°" + numeroJoueur + " a été éliminé à la première manche...");
-				//rentre en compte lors de la deuxieme manche, évite d'essayer d'afficher des données inutiles ou inexistantes
-			}else{
-				System.out.println("Voici les résultats de la manche n°" + numeroManche + " pour le joueur n°" + numeroJoueur + " :");
-				System.out.println("Ce joueur était sur un parcours comportant " + nbBarresMax + " et en a fait tomber " + nbBarres[numeroJoueur-1] + "." );
-				System.out.println("Son cheval a refusé " + nbRefus[numeroJoueur-1] + " fois de sauter un obstacle.");
-				if (chute){
-					System.out.println("Ce joueur est malheureusement tombé de son cheval durant la manche, il est donc disqualifié.");
-				}else{
-					System.out.println("Ce joueur n'est pas tombé durant son parcours, il est donc toujours en course pour le podium.");
-				}
-				System.out.println("Ce joueur a réalisé un temps de " + tempsMs[numeroJoueur-1]);
-				if (barreTombe){
-					int tempsFinal = tempsCompense(tempsMs[numeroJoueur-1], nbBarres[numeroJoueur-1]);
-					System.out.println("Il a cependant fait tomber des barres, ramenant son temps final à " + tempsFinal + ".");
-				}
-				
-			}
-		}
-	}
-
-
-    // === SAISIES UNITAIRES (keridwen)===
-    public static int saisirNbBarresTombees(int nbBarresMax, int nbBarres[], boolean barreTombe, int joueur) { 
-		if (barreTombe){
-			//modifie directement le tableau
-			nbBarres[joueur] += 1;
-			barreTombe = false;
-		}
-		if (nbBarres[joueur]>nbBarresMax){
-			System.out.println("Toutes les barres sont tombées!");
-		}
-		return nbBarres[joueur]; 
-	}
-
-    public static int saisirNbRefus(int[]nbRefus, boolean refus, int joueur) { 
-		if (refus){
-			//modifie directement le tableau
-			nbRefus[joueur]+=1;
-			refus=false;
-		}	
-		return nbRefus[joueur]; 
-	}
-
-    public static boolean elimine(int nbRefus[joueur], double longueurPiste, int joueur, int tempsMs) { 
-		if (nbRefus[joueur]>3){
-			elimine=true;
-			System.out.println("Le joueur n°" + joueur + " vient d'être éliminé!");
-			return elimine;
-		}
-		if (longueurPiste<600){
-			if(tempMs>120000){
-				System.out.println("Le joueur n°" + joueur + " vient d'être éliminé!");
-				elimine=true;
-			}else{
-				if(tempMs>180000){
-					System.out.println("Le joueur n°" + joueur + " vient d'être éliminé!");
-					elimine=true;
-				}
-			}
-        }
-		return elimine; 
-	}
-	
-	public static boolean chute(boolean chute){
-		if (chute) {
-			System.out.println("Le joueur n°" + joueur + " vient d'être éliminé!");
-			elimine=true;
-		}
-		return  elimine;
-	}
-
-    public static int saisirTempsMs(int tempsMs) { 
-		System.out.println("Saisissez le temps :");
-		tempsMs = lireEntier(Scanner pfScanner);
-		return tempsMs; 
-	}
-
-    // === CALCULS (clement)===
-
-    public static int tempsCompense(int tempsMs, int nbBarres) {
-        for  (int i = 0; i < nbBarres; i++) {
-            tempsMs = tempsMs + 8000;
-        }
-        return tempsMs;
-    }
-
-    // === AFFICHAGES (clement)===
-    public static void afficherResultats(
-            int nbCompetiteurs,
             boolean[] elimine,
-            double[] tempsCompense) {
-
-    }
-
-    public static void afficherPodium(
-            int nbCompetiteurs,
-            boolean[] elimine,
-            double[] tempsCompense
+            int numeroManche,
+            int numeroJoueur
     ) {
-        double meilleur = -1;
-        double deuxieme = -1;
-        double troisieme = -1;
+        if (numeroManche != 1 && numeroManche != 2) {
+            System.out.println("Erreur ! La manche n°" + numeroManche + " n'existe pas!");
+            return;
+        }
+        int j = numeroJoueur;
+        System.out.println("Joueur " + (j + 1) + " — Manche " + numeroManche);
+        if (elimine[j]) {
+            System.out.println("  -> Éliminé.");
+            return;
+        }
 
-        // On cherche les 3 meilleurs temps distincts
+        System.out.println("  Barres tombées : " + nbBarres[j] + " / " + nbBarresMax);
+        System.out.println("  Refus : " + nbRefus[j]);
+        System.out.println("  Chute : " + (chute[j] ? "oui" : "non"));
+
+        if (tempsMs[j] > 0) {
+            int tempsFinal = (int) computeTempsCompense(tempsMs[j], nbBarres[j]);
+            System.out.println("  Temps brut : " + formatTemps(tempsMs[j]));
+            if (nbBarres[j] > 0)
+                System.out.println("  Pénalité : " + (nbBarres[j] * 8000) + " ms (" + nbBarres[j] + " barre(s))");
+            System.out.println("  Temps compensé : " + formatTemps(tempsFinal));
+        } else System.out.println("  Temps non saisi.");
+    }
+
+    /**
+     * Calcule le temps compensé en ajoutant une pénalité de 8000 ms par barre tombée.
+     *
+     * @param tempsMs  temps de base en millisecondes
+     * @param nbBarres nombre de barres tombées
+     * @return le temps total compensé
+     */
+    public static double computeTempsCompense(int tempsMs, int nbBarres) {
+        return tempsMs + (long) nbBarres * 8000L;
+    }
+
+    /**
+     * Affiche le podium (1er, 2e, 3e) selon les meilleurs temps compensés.
+     *
+     * @param nbCompetiteurs nombre de compétiteurs
+     * @param elimine        tableau des éliminations
+     * @param tempsCompense  tableau des temps compensés
+     */
+    public static void afficherPodium(int nbCompetiteurs, boolean[] elimine, double[] tempsCompense) {
+        double meilleur = -1, deuxieme = -1, troisieme = -1;
+
         for (int i = 0; i < nbCompetiteurs; i++) {
-            if (!elimine[i]) {
+            if (!elimine[i] && tempsCompense[i] >= 0) {
                 double t = tempsCompense[i];
-
                 if (meilleur == -1 || t < meilleur) {
-                    troisieme = deuxieme;
-                    deuxieme = meilleur;
-                    meilleur = t;
+                    troisieme = deuxieme; deuxieme = meilleur; meilleur = t;
                 } else if ((t > meilleur && (deuxieme == -1 || t < deuxieme))) {
-                    troisieme = deuxieme;
-                    deuxieme = t;
+                    troisieme = deuxieme; deuxieme = t;
                 } else if ((t > deuxieme && (troisieme == -1 || t < troisieme))) {
                     troisieme = t;
                 }
@@ -335,43 +367,47 @@ public class Main {
         }
 
         System.out.println("=== PODIUM ===");
-
-
-        if (meilleur != -1) {
-            System.out.print(" 1er : ");
-            for (int i = 0; i < nbCompetiteurs; i++) {
-                if (!elimine[i] && tempsCompense[i] == meilleur)
-                    System.out.print("Concurrent " + (i + 1) + " ");
-            }
-            System.out.println("(" + formatTemps(meilleur) + ")");
-        }
-
-        if (deuxieme != -1) {
-            System.out.print(" 2e : ");
-            for (int i = 0; i < nbCompetiteurs; i++) {
-                if (!elimine[i] && tempsCompense[i] == deuxieme)
-                    System.out.print("Concurrent " + (i + 1) + " ");
-            }
-            System.out.println("(" + formatTemps(deuxieme) + ")");
-        }
-        if (troisieme != -1) {
-            System.out.print(" 3e : ");
-            for (int i = 0; i < nbCompetiteurs; i++) {
-                if (!elimine[i] && tempsCompense[i] == troisieme)
-                    System.out.print("Concurrent " + (i + 1) + " ");
-            }
-            System.out.println("(" + formatTemps(troisieme) + ")");
-        }
+        afficherRang(1, meilleur, elimine, tempsCompense);
+        afficherRang(2, deuxieme, elimine, tempsCompense);
+        afficherRang(3, troisieme, elimine, tempsCompense);
     }
 
-	//clement
-    public static String formatTemps(double tempsMs) {
-        int totalSecondes = (int)(tempsMs / 1000);
+    /**
+     * Affiche les concurrents correspondant à un rang donné du podium.
+     *
+     * @param rang          position du podium (1, 2 ou 3)
+     * @param temps         temps correspondant au rang
+     * @param elimine       tableau des éliminations
+     * @param tempsCompense tableau des temps compensés
+     */
+    private static void afficherRang(int rang, double temps, boolean[] elimine, double[] tempsCompense) {
+        if (temps == -1) {
+            System.out.println(" " + rang + "e : (personne)");
+            return;
+        }
+        System.out.print(" " + rang + "e : ");
+        for (int i = 0; i < elimine.length; i++) {
+            if (!elimine[i] && tempsCompense[i] == temps)
+                System.out.print("Concurrent " + (i + 1) + " ");
+        }
+        System.out.println("(" + formatTemps(temps) + ")");
+    }
 
+    /**
+     * Formate un temps exprimé en millisecondes sous la forme :
+     * "X min Y s Z ms".
+     *
+     * @param tempsMs temps en millisecondes
+     * @return chaîne formatée lisible
+     */
+
+    public static String formatTemps(double tempsMs) {
+        double tempTempsMs = tempsMs;
+        if  (tempTempsMs < 0) return "Temps invalide";
+        int totalSecondes = (int) (tempTempsMs / 1000);
         int minutes = totalSecondes / 60;
         int secondes = totalSecondes % 60;
-        int millisecondes = (int)(tempsMs % 1000);
-
+        int millisecondes = (int) (tempTempsMs % 1000);
         return minutes + " min " + secondes + " s " + millisecondes + " ms";
     }
 }
