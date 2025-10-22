@@ -11,7 +11,7 @@ public class Main {
         System.out.println(formatTemps(83456));
 		int max_Competiteur = 50;
 		
-        // Saisie information Epreuve 
+        // Saisie information Epreuve (leo)
         int nbCompetiteurs = saisieEntierBorne(sc, 1, max_Competiteur, "Veuillez saisir le nombre de compétiteurs (entre 1 et " + max_Competiteur + ")");
         double longueurPiste = saisieReelMinimum(sc, 0.0, "Veuillez saisir la longueur de la piste (>=0.0)");
         int nbObstacles = saisieEntierBorne(sc, 1, Integer.MAX_VALUE, "Veuillez saisir le nombre d'obstacles (>1)");
@@ -26,28 +26,41 @@ public class Main {
         System.out.println("Nombre d'obstacles : " + nbObstacles);
         System.out.println("Nombre total de barres : " + nbBarres);
 		
-		//Saisie de la première manche
+		//Saisie de la première manche (keridwen)
 		int competiteurs= nbCompetiteurs-1;
+		int [] nbBarres = new int[nbCompetiteurs];//init du tableau
+		int [] nbRefus = new int[nbCompetiteurs];
+		boolean refus = false;
+		int [] tempsMs = new int[nbCompetiteurs];
+		boolean chute = false;
+		boolean barreTombe = false;
+		boolean[] elimine = new boolean[nbCompetiteurs];
+		
 		int i=0;
 		System.out.println("Nous allons procéder à la saisie de la première manche: ");
 		for(i=0; i < competiteurs; i++){
-			saisieManche();
+			tempMs[joueur]=0;
+			saisieManche(i, nbBarres[], barreTombe, nbRefus[], refus, tempsMs[i], chute, elimine[i]);
 		}
 		
-		//Résultats de la première manche
+		//Résultats de la première manche(keridwen)
 		for( i=0;  i < competiteurs;  i++){
-			afficherManche(nbCompetiteurs, nbBarresMax, longueurPiste, nbBarres[i], barreTombe, nbRefus[i],refus, chute[i], tempsMs[i], elimine[i], tempsCompense[i], 1 , i);
+			afficherManche(nbCompetiteurs, nbBarres, longueurPiste, nbBarres[i], barreTombe, nbRefus[i], refus, chute[i], tempsMs[i], elimine[i], tempsCompense[i], 1 , i);
 		}
 		
-		//Saisie de la deuxième manche
+		//Saisie de la deuxième manche(keridwen)
 		System.out.println("Nous allons procéder à la saisie de la deuxième manche: ");
 		for(i=0; i < competiteurs; i++){
-			saisieManche();
+			if(elimine[i]){
+				System.out.println("Ce joueur a déjà été éliminé");
+				break;
+			}
+			saisieManche(i, nbBarres[], barreTombe, nbRefus[], refus, tempsMs[i], chute, elimine[i]);
 		}
 		
-		//Résultats de la deuxième manche
+		//Résultats de la deuxième manche(keridwen)
 		for(i=0; i<competiteurs;  i++){
-			afficherManche(nbCompetiteurs, nbBarresMax, longueurPiste, nbBarres[i], barreTombe, nbRefus[i],refus, chute[i], tempsMs[i], elimine[i], tempsCompense[i], 2 , i);
+			afficherManche(nbCompetiteurs, nbBarres, longueurPiste, nbBarres[i], barreTombe, nbRefus[i],refus, chute[i], tempsMs[i], elimine[i], tempsCompense[i], 2 , i);
 		}
 
         // === TEST 1 : aucun éliminé, tous temps différents ===
@@ -140,9 +153,40 @@ public class Main {
         }
         return valeur;
     }
+	
 	// === SAISIE D'UNE MANCHE (keridwen) ===
-	public static void saisieManche(){
-		
+	public static void saisieManche(int i, int [] nbBarres, boolean barreTombe, int [] nbRefus, boolean refus, int tempsMs, boolean chute, boolean elimine){
+		int joueur = i;
+		Scanner scanner = new Scanner(System.in);
+		while (tempsMs==0){
+			System.out.println("Le joueur a-t-il fait tomber une barre (oui ou non)?");
+			String réponse = scanner.nextString();
+			if(réponse=="oui"){
+				barreTombe = true;
+				nbBarres[joueur] = saisirNbBarresTombees(nbBarres, nbBarres[], barreTombe, joueur);
+				barreTombe = false;
+			}
+			System.out.println("Le cheval a-t-il refusé de sauter un obstacle (oui ou non)?");
+			String réponse = scanner.nextString();
+			if(réponse=="oui"){
+				refus = true;
+				nbRefus[joueur] = saisirNbRefus(nbRefus[], refus, joueur);
+				refus = false;
+			}
+			System.out.println("Le joueur est-il tombé (oui ou non)?");
+			String réponse = scanner.nextString();
+			if(réponse=="oui"){
+				chute = true;
+				chute(chute);
+				//return elimine;
+			}
+			System.out.println("Le parcours est-il fini (oui ou non)?");
+			String réponse = scanner.nextString();
+			if(réponse=="oui"){
+				tempsMs = saisirTempsMs(tempsMs);
+			}
+			elimine = elimine(nbRefus[joueur], longueurPiste, joueur, tempsMs);
+		}
 	}
 	
     // === AFFICHAGE DES RÉSULTATS D’UNE MANCHE (keridwen) ===
@@ -162,11 +206,14 @@ public class Main {
     ) { 
 		if (numeroManche != 1 || numeroManche != 2){
 			System.out.println("Erreur ! La manche n°" + numeroManche + " n'existe pas!");
+			//utile si on demandait la saisie manuelle de la manche or ici on met 1 ou 2 d'office
 		}else if(numeroJoueur<0 || numeroJoueur>nbCompetiteurs){
 			System.out.println("Erreur ! Le joueur n°" + numeroJoueur + " n'existe pas!");
+			//utile si on demandait la saisie manuelle des numéros or ici c'est automatique
 		}else{
 			if(numeroManche!=1 || elimine ){
 				System.out.println("Le joueur n°" + numeroJoueur + " a été éliminé à la première manche...");
+				//rentre en compte lors de la deuxieme manche, évite d'essayer d'afficher des données inutiles ou inexistantes
 			}else{
 				System.out.println("Voici les résultats de la manche n°" + numeroManche + " pour le joueur n°" + numeroJoueur + " :");
 				System.out.println("Ce joueur était sur un parcours comportant " + nbBarresMax + " et en a fait tomber " + nbBarres[numeroJoueur-1] + "." );
@@ -183,12 +230,14 @@ public class Main {
 				}
 				
 			}
+		}
 	}
 
 
     // === SAISIES UNITAIRES (keridwen)===
-    public static int saisirNbBarresTombees(int nbBarresMax, int nbBarres[], boolean barreTombe) { 
+    public static int saisirNbBarresTombees(int nbBarresMax, int nbBarres[], boolean barreTombe, int joueur) { 
 		if (barreTombe){
+			//modifie directement le tableau
 			nbBarres[joueur] += 1;
 			barreTombe = false;
 		}
@@ -198,24 +247,28 @@ public class Main {
 		return nbBarres[joueur]; 
 	}
 
-    public static int saisirNbRefus(int[]nbRefus, boolean refus) { 
+    public static int saisirNbRefus(int[]nbRefus, boolean refus, int joueur) { 
 		if (refus){
+			//modifie directement le tableau
 			nbRefus[joueur]+=1;
 			refus=false;
 		}	
 		return nbRefus[joueur]; 
 	}
 
-    public static boolean elimine(int nbRefus[], double longueurPiste) { 
+    public static boolean elimine(int nbRefus[joueur], double longueurPiste, int joueur, int tempsMs) { 
 		if (nbRefus[joueur]>3){
 			elimine=true;
+			System.out.println("Le joueur n°" + joueur + " vient d'être éliminé!");
 			return elimine;
 		}
 		if (longueurPiste<600){
 			if(tempMs>120000){
+				System.out.println("Le joueur n°" + joueur + " vient d'être éliminé!");
 				elimine=true;
 			}else{
 				if(tempMs>180000){
+					System.out.println("Le joueur n°" + joueur + " vient d'être éliminé!");
 					elimine=true;
 				}
 			}
@@ -225,13 +278,16 @@ public class Main {
 	
 	public static boolean chute(boolean chute){
 		if (chute) {
+			System.out.println("Le joueur n°" + joueur + " vient d'être éliminé!");
 			elimine=true;
 		}
 		return  elimine;
 	}
 
-    public static long saisirTempsMs() { 
-		return 0; 
+    public static int saisirTempsMs(int tempsMs) { 
+		System.out.println("Saisissez le temps :");
+		tempsMs = lireEntier(Scanner pfScanner);
+		return tempsMs; 
 	}
 
     // === CALCULS (clement)===
