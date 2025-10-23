@@ -24,11 +24,11 @@ public class Main {
 
         System.out.println("Récapitulatif de l'épreuve: ");
         System.out.println("Nombre de compétiteurs : " + nbCompetiteurs);
-        System.out.println("Longeur de la piste : " + longueurPiste);
+        System.out.println("Longueur de la piste : " + longueurPiste);
         System.out.println("Nombre d'obstacles : " + nbObstacles);
         System.out.println("Nombre total de barres : " + nbBarresTotal);
 
-        // Saisie de la première manche
+        // Saisie de la première manche (keridwen)
         int[] nbBarres = new int[nbCompetiteurs];
         int[] nbRefus = new int[nbCompetiteurs];
         int[] tempsMs  = new int[nbCompetiteurs];
@@ -41,14 +41,14 @@ public class Main {
             saisieManche(i, nbBarres, nbRefus, tempsMs, chute, elimine, nbBarresTotal, longueurPiste);
         }
 
-        // Résultats de la première manche (affichage simple joueur par joueur)
+        // Résultats de la première manche (affichage simple joueur par joueur)(keridwen/clement)
         for (int i = 0; i < nbCompetiteurs; i++) {
             // paramètres "barreTombe" et "refus" ne sont pas utilisés pour la logique,
             // on passe false juste pour afficher.
             afficherManche(nbCompetiteurs, nbBarresTotal, longueurPiste, nbBarres, false, nbRefus, false, chute[i], tempsMs, elimine[i], 1, i + 1);
         }
 
-        // Saisie de la deuxième manche
+        // Saisie de la deuxième manche(keridwen)
         System.out.println("Nous allons procéder à la saisie de la deuxième manche: ");
         for (int i = 0; i < nbCompetiteurs; i++) {
             if (elimine[i]) {
@@ -58,12 +58,12 @@ public class Main {
             saisieManche(i, nbBarres, nbRefus, tempsMs, chute, elimine, nbBarresTotal, longueurPiste);
         }
 
-        // Résultats de la deuxième manche (affichage simple joueur par joueur)
+        // Résultats de la deuxième manche (affichage simple joueur par joueur)(keridwen)
         for (int i = 0; i < nbCompetiteurs; i++) {
             afficherManche(nbCompetiteurs, nbBarresTotal, longueurPiste, nbBarres, false, nbRefus, false, chute[i], tempsMs, elimine[i], 2, i + 1);
         }
 
-        // === CALCUL, AFFICHAGE DES RÉSULTATS FINAUX ET PODIUM ===
+        // === CALCUL, AFFICHAGE DES RÉSULTATS FINAUX ET PODIUM (clement) ===
         double[] tempsCompenseFinal = new double[nbCompetiteurs];
         for (int i = 0; i < nbCompetiteurs; i++) {
             if (elimine[i]) {
@@ -148,7 +148,8 @@ public class Main {
         }
         return valeur;
     }
-
+	
+	// === SAISIE D’UNE MANCHE (keridwen) ===
     /**
      * Saisie d'une manche pour un joueur : barres, refus, chute, temps.
      * Met à jour les tableaux et détermine l'élimination selon les règles simples.
